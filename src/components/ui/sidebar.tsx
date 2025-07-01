@@ -30,6 +30,7 @@ const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
+const SIDEBAR_HEIGHT_HOVER = "80vh"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
 type SidebarContextProps = {
@@ -164,7 +165,6 @@ function Sidebar({
   collapsible?: "offcanvas" | "icon" | "none"
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
-  const [isHovered, setIsHovered] = React.useState(false)
 
   if (collapsible === "none") {
     return (
@@ -228,22 +228,10 @@ function Sidebar({
         )}
       />
       
-      {/* Hover trigger area for collapsed sidebar */}
-      {state === "collapsed" && collapsible === "offcanvas" && (
-        <div
-          className={cn(
-            "fixed inset-y-0 z-[5] w-4 transition-all duration-200",
-            side === "left" ? "left-0" : "right-0"
-          )}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        />
-      )}
-      
       <div
         data-slot="sidebar-container"
         className={cn(
-          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width,opacity,transform] duration-200 ease-linear md:flex",
+          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
@@ -251,29 +239,14 @@ function Sidebar({
           variant === "floating" || variant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
             : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
-          // Hover state for collapsed sidebar
-          state === "collapsed" && collapsible === "offcanvas" && isHovered && [
-            "!z-50 shadow-lg",
-            side === "left" ? "!left-0" : "!right-0"
-          ],
           className
         )}
-        onMouseEnter={() => state === "collapsed" && setIsHovered(true)}
-        onMouseLeave={() => state === "collapsed" && setIsHovered(false)}
         {...props}
       >
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className={cn(
-            "bg-sidebar flex h-full w-full flex-col transition-all duration-200",
-            "group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm",
-            // Enhanced floating appearance when hovered and collapsed
-            state === "collapsed" && collapsible === "offcanvas" && isHovered && [
-              "border border-sidebar-border rounded-lg shadow-xl backdrop-blur-sm",
-              "bg-sidebar/95"
-            ]
-          )}
+          className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
         >
           {children}
         </div>
@@ -753,3 +726,5 @@ export {
   SidebarTrigger,
   useSidebar,
 }
+
+export { HoverSidebar } from "./hover-sidebar"
