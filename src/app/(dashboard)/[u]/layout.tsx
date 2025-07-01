@@ -1,4 +1,6 @@
+"use client"
 import { AppSidebar } from "@/components/sidebar/app-sidebar"
+import React from "react";
 import {
   SidebarInset,
   SidebarProvider,
@@ -9,6 +11,9 @@ interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
+
+
+
   return (
     <SidebarProvider>
       <AppSidebar />
