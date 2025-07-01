@@ -8,7 +8,8 @@ import {
   jsonb,
   uuid,
   index,
-  uniqueIndex
+  uniqueIndex,
+  type PgTableWithColumns
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -95,7 +96,12 @@ export const workspaceMembers = pgTable('workspace_members', {
 // ============================================================================
 
 // Folders - hierarchical organization
-export const folders: any = pgTable('folders', {
+export const folders: PgTableWithColumns<{
+  name: 'folders';
+  schema: undefined;
+  columns: any;
+  dialect: 'pg';
+}> = pgTable('folders', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: varchar('name', { length: 255 }).notNull(),
   icon: varchar('icon', { length: 100 }),
@@ -129,7 +135,12 @@ export const tags = pgTable('tags', {
 // ============================================================================
 
 // Notes - the main content containers (like Notion pages)
-export const notes = pgTable('notes', {
+export const notes: PgTableWithColumns<{
+  name: 'notes';
+  schema: undefined;
+  columns: any;
+  dialect: 'pg';
+}> = pgTable('notes', {
   id: uuid('id').primaryKey().defaultRandom(),
   title: varchar('title', { length: 500 }).notNull(),
   icon: varchar('icon', { length: 100 }), // emoji or icon identifier
@@ -180,7 +191,12 @@ export const notes = pgTable('notes', {
 ]);
 
 // Blocks - the core of the block-based editor (like Notion blocks)
-export const blocks: any = pgTable('blocks', {
+export const blocks: PgTableWithColumns<{
+  name: 'blocks';
+  schema: undefined;
+  columns: any;
+  dialect: 'pg';
+}> = pgTable('blocks', {
   id: uuid('id').primaryKey().defaultRandom(),
   noteId: uuid('note_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
   parentId: uuid('parent_id').references(() => blocks.id, { onDelete: 'cascade' }), // for nested blocks

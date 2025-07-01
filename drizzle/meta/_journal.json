@@ -8,6 +8,13 @@
       "when": 1751249113120,
       "tag": "0000_flashy_romulus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1751331047426,
+      "tag": "0001_curly_onslaught",
+      "breakpoints": true
     }
   ]
 }
