@@ -347,7 +347,7 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
             }}
           >
             <p className="text-xs">
-              Click to {open ? "collapse" : "expand"} sidebar
+              {open ? "collapse" : "expand"} sidebar
             </p>
             <p className="text-xs text-white">
               {`⌘${SIDEBAR_KEYBOARD_SHORTCUT.toUpperCase()}`}
