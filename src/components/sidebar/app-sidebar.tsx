@@ -20,9 +20,11 @@ import { NavMain } from "@/components/sidebar/nav-main"
 import { NavSecondary } from "@/components/sidebar/nav-secondary"
 import { NavWorkspaces } from "@/components/sidebar/nav-workspaces"
 import { TeamSwitcher } from "@/components/sidebar/team-switcher"
+import { UserDropdown } from "@/components/sidebar/user-dropdown"
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarRail,
   HoverSidebar,
@@ -264,6 +266,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <NavWorkspaces workspaces={data.workspaces} />
           <NavSecondary items={data.navSecondary} className="mt-auto" />
         </SidebarContent>
+        <SidebarFooter>
+          <UserDropdown />
+        </SidebarFooter>
         <SidebarRail />
       </Sidebar>
       
@@ -277,6 +282,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <NavWorkspaces workspaces={data.workspaces} />
           <NavSecondary items={data.navSecondary} className="mt-auto" />
         </SidebarContent>
+        <SidebarFooter>
+          <UserDropdown />
+        </SidebarFooter>
       </HoverSidebar>
     </>
   )
