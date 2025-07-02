@@ -12,8 +12,8 @@ export default function AuthPage() {
   // useEffect(() => {
   //   if (session?.user) {
   //     // Redirect to user's personal boards page
-  //     const username = session.user.email?.split('@')[0] || 'user';
-  //     router.push(`/u/${username}/boards`);
+  //     const userId = session.user.id;
+  //     router.push(`/${userId}/boards`);
   //   }
   // }, [session, router]);
 

@@ -9,6 +9,7 @@ import {
   Home,
   Inbox,
   MessageCircleQuestion,
+  Notebook,
   Search,
   Settings2,
   Sparkles,
@@ -55,11 +56,7 @@ const data = {
       url: "#",
       icon: Search,
     },
-    {
-      title: "Ask AI",
-      url: "#",
-      icon: Sparkles,
-    },
+    
     {
       title: "Home",
       url: "#",
@@ -67,9 +64,9 @@ const data = {
       isActive: true,
     },
     {
-      title: "Inbox",
+      title: "Note",
       url: "#",
-      icon: Inbox,
+      icon: Notebook,
       badge: "10",
     },
   ],
