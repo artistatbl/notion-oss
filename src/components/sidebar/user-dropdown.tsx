@@ -66,10 +66,7 @@ export function UserDropdown() {
           </Avatar>
           <div className="flex flex-col items-start text-left">
             <span className="text-sm font-medium truncate max-w-[120px]">
-              {user.name || "User"}
-            </span>
-            <span className="text-xs text-muted-foreground truncate max-w-[120px]">
-              {user.email}
+              {user.name || 'User'}
             </span>
           </div>
         </SidebarMenuButton>
@@ -77,12 +74,7 @@ export function UserDropdown() {
       <DropdownMenuContent side="right" align="end" className="w-56">
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
-              {user.name || "User"}
-            </p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {user.email}
-            </p>
+            <p className="text-sm font-medium leading-none">{user.name || 'User'}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
