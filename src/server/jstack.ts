@@ -2,6 +2,8 @@ import { neon } from "@neondatabase/serverless"
 import { drizzle } from "drizzle-orm/neon-http"
 import { env } from "hono/adapter"
 import { jstack } from "jstack"
+import { auth } from "@/lib/auth"
+import { HTTPException } from "hono/http-exception"
 
 interface Env {
   Bindings: { DATABASE_URL: string }
@@ -24,8 +26,22 @@ const databaseMiddleware = j.middleware(async ({ c, next }) => {
 })
 
 /**
+ * Authentication middleware that checks for valid session
+ */
+const authMiddleware = j.middleware(async ({ c, next }) => {
+  const session = await auth.api.getSession({ headers: c.req.raw.headers })
+  
+  if (!session) {
+    throw new HTTPException(401, { message: "Unauthorized" })
+  }
+
+  return await next({ user: session.user })
+})
+
+/**
  * Public (unauthenticated) procedures
  *
  * This is the base piece you use to build new queries and mutations on your API.
  */
 export const publicProcedure = j.procedure.use(databaseMiddleware)
+export const privateProcedure = j.procedure.use(databaseMiddleware).use(authMiddleware)

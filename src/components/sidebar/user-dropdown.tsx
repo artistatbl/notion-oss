@@ -14,6 +14,7 @@ import {
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { useUser } from "@/hooks/use-user";
 import { signOut } from "@/lib/auth-client";
+import { getInitials } from "@/lib/utils";
 
 export function UserDropdown() {
   const { user, isAuthenticated, isLoading } = useUser();
@@ -34,14 +35,7 @@ export function UserDropdown() {
     return null;
   }
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((word) => word.charAt(0))
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
+
 
   const handleSignOut = async () => {
     try {

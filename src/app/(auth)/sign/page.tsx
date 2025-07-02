@@ -17,18 +17,18 @@ export default function AuthPage() {
   //   }
   // }, [session, router]);
 
-  // if (isPending) {
-  //   return (
-  //     <main className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 flex-col items-center justify-center relative isolate">
-  //       <div className="absolute inset-0 -z-10 opacity-50 mix-blend-soft-light bg-[url('/noise.svg')] [mask-image:radial-gradient(ellipse_at_center,black,transparent)]" />
-  //       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-  //     </main>
-  //   );
-  // }
+  if (isPending) {
+    return (
+      <main className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 flex-col items-center justify-center relative isolate">
+        <div className="absolute inset-0 -z-10 opacity-50 mix-blend-soft-light bg-[url('/noise.svg')] [mask-image:radial-gradient(ellipse_at_center,black,transparent)]" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      </main>
+    );
+  }
 
-  // if (session) {
-  //   return null; // Will redirect to user boards
-  // }
+  if (session) {
+    return null; // Will redirect to user workspace
+  }
 
   return (
     <main className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 flex-col items-center justify-center relative isolate">
