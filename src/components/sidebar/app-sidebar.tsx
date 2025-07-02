@@ -87,16 +87,8 @@ const data = {
       url: "#",
       icon: Blocks,
     },
-    {
-      title: "Trash",
-      url: "#",
-      icon: Trash2,
-    },
-    {
-      title: "Help",
-      url: "#",
-      icon: MessageCircleQuestion,
-    },
+
+   
   ],
   favorites: [
     {
