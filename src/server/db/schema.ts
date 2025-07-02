@@ -6,7 +6,6 @@ import {
   boolean,
   integer,
   jsonb,
-  uuid,
   index,
   uniqueIndex,
   type PgTableWithColumns
@@ -19,10 +18,10 @@ import { relations } from 'drizzle-orm';
 
 // Users table - manages authentication and user profiles (Better Auth compatible)
 export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   name: varchar('name', { length: 255 }).notNull(),
-  avatar: varchar('avatar', { length: 500 }),
+  image: text('image'),
   preferences: jsonb('preferences'), // UI settings, themes, etc.
   emailVerified: boolean('email_verified').$defaultFn(() => false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -38,14 +37,14 @@ export const session = pgTable("session", {
   updatedAt: timestamp('updated_at').notNull(),
   ipAddress: text('ip_address'),
   userAgent: text('user_agent'),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' })
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' })
 });
 
 export const account = pgTable("account", {
   id: text('id').primaryKey(),
   accountId: text('account_id').notNull(),
   providerId: text('provider_id').notNull(),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   accessToken: text('access_token'),
   refreshToken: text('refresh_token'),
   idToken: text('id_token'),
@@ -68,10 +67,10 @@ export const verification = pgTable("verification", {
 
 // Workspaces - top-level organization (like Notion workspaces)
 export const workspaces = pgTable('workspaces', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: varchar('name', { length: 255 }).notNull(),
   icon: varchar('icon', { length: 100 }),
-  ownerId: uuid('owner_id').references(() => users.id).notNull(),
+  ownerId: text('owner_id').references(() => users.id).notNull(),
   settings: jsonb('settings'), // workspace-level settings
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -81,9 +80,9 @@ export const workspaces = pgTable('workspaces', {
 
 // Workspace members - who has access to what workspace
 export const workspaceMembers = pgTable('workspace_members', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  workspaceId: uuid('workspace_id').references(() => workspaces.id).notNull(),
-  userId: uuid('user_id').references(() => users.id).notNull(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  workspaceId: text('workspace_id').references(() => workspaces.id).notNull(),
+  userId: text('user_id').references(() => users.id).notNull(),
   role: varchar('role', { length: 20 }).notNull().default('member'), // 'owner', 'admin', 'member', 'viewer'
   joinedAt: timestamp('joined_at').defaultNow().notNull(),
 }, (table) => [
@@ -102,12 +101,12 @@ export const folders: PgTableWithColumns<{
   columns: any;
   dialect: 'pg';
 }> = pgTable('folders', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: varchar('name', { length: 255 }).notNull(),
   icon: varchar('icon', { length: 100 }),
   color: varchar('color', { length: 7 }), // hex color
-  workspaceId: uuid('workspace_id').references(() => workspaces.id).notNull(),
-  parentId: uuid('parent_id').references(() => folders.id),
+  workspaceId: text('workspace_id').references(() => workspaces.id).notNull(),
+  parentId: text('parent_id').references(() => folders.id),
   position: integer('position').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -119,10 +118,10 @@ export const folders: PgTableWithColumns<{
 
 // Tags - flexible labeling system
 export const tags = pgTable('tags', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: varchar('name', { length: 100 }).notNull(),
   color: varchar('color', { length: 7 }), // hex color
-  workspaceId: uuid('workspace_id').references(() => workspaces.id).notNull(),
+  workspaceId: text('workspace_id').references(() => workspaces.id).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => [
   index('tags_workspace_id_idx').on(table.workspaceId),
@@ -141,14 +140,14 @@ export const notes: PgTableWithColumns<{
   columns: any;
   dialect: 'pg';
 }> = pgTable('notes', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   title: varchar('title', { length: 500 }).notNull(),
   icon: varchar('icon', { length: 100 }), // emoji or icon identifier
   coverImage: varchar('cover_image', { length: 500 }),
-  workspaceId: uuid('workspace_id').references(() => workspaces.id).notNull(),
-  folderId: uuid('folder_id').references(() => folders.id),
-  parentId: uuid('parent_id').references(() => notes.id), // for sub-pages
-  createdBy: uuid('created_by').references(() => users.id).notNull(),
+  workspaceId: text('workspace_id').references(() => workspaces.id).notNull(),
+  folderId: text('folder_id').references(() => folders.id),
+  parentId: text('parent_id').references(() => notes.id), // for sub-pages
+  createdBy: text('created_by').references(() => users.id).notNull(),
   
   // Page type and structure
   pageType: varchar('page_type', { length: 50 }).default('page'), // 'page', 'database', 'template'
@@ -197,9 +196,9 @@ export const blocks: PgTableWithColumns<{
   columns: any;
   dialect: 'pg';
 }> = pgTable('blocks', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  noteId: uuid('note_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
-  parentId: uuid('parent_id').references(() => blocks.id, { onDelete: 'cascade' }), // for nested blocks
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  noteId: text('note_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
+  parentId: text('parent_id').references(() => blocks.id, { onDelete: 'cascade' }), // for nested blocks
   
   // Block structure
   type: varchar('type', { length: 50 }).notNull(), // 'paragraph', 'heading1-6', 'bulleted_list', 'numbered_list', 'to_do', 'toggle', 'quote', 'divider', 'callout', 'code', 'image', 'video', 'file', 'bookmark', 'table', 'column_list', 'column', 'embed', 'equation', 'breadcrumb', 'table_of_contents', 'link_to_page', 'synced_block', 'template', 'database'
@@ -229,9 +228,9 @@ export const blocks: PgTableWithColumns<{
 
 // Note tags - many-to-many relationship between notes and tags
 export const noteTags = pgTable('note_tags', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  noteId: uuid('note_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
-  tagId: uuid('tag_id').references(() => tags.id, { onDelete: 'cascade' }).notNull(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  noteId: text('note_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
+  tagId: text('tag_id').references(() => tags.id, { onDelete: 'cascade' }).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => [
   uniqueIndex('note_tags_note_tag_idx').on(table.noteId, table.tagId),
@@ -245,9 +244,9 @@ export const noteTags = pgTable('note_tags', {
 
 // Block comments - collaborative commenting on specific blocks
 export const blockComments = pgTable('block_comments', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  blockId: uuid('block_id').references(() => blocks.id, { onDelete: 'cascade' }).notNull(),
-  userId: uuid('user_id').references(() => users.id).notNull(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  blockId: text('block_id').references(() => blocks.id, { onDelete: 'cascade' }).notNull(),
+  userId: text('user_id').references(() => users.id).notNull(),
   content: text('content').notNull(),
   isResolved: boolean('is_resolved').default(false),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -260,11 +259,11 @@ export const blockComments = pgTable('block_comments', {
 
 // Note permissions - granular access control
 export const notePermissions = pgTable('note_permissions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  noteId: uuid('note_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  noteId: text('note_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
+  userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   permission: varchar('permission', { length: 20 }).notNull(), // 'view', 'comment', 'edit', 'admin'
-  grantedBy: uuid('granted_by').references(() => users.id).notNull(),
+  grantedBy: text('granted_by').references(() => users.id).notNull(),
   grantedAt: timestamp('granted_at').defaultNow().notNull(),
 }, (table) => [
   uniqueIndex('note_permissions_note_user_idx').on(table.noteId, table.userId),
@@ -278,9 +277,9 @@ export const notePermissions = pgTable('note_permissions', {
 
 // Attachments - file attachments linked to blocks or notes
 export const attachments = pgTable('attachments', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  noteId: uuid('note_id').references(() => notes.id, { onDelete: 'cascade' }),
-  blockId: uuid('block_id').references(() => blocks.id, { onDelete: 'cascade' }),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  noteId: text('note_id').references(() => notes.id, { onDelete: 'cascade' }),
+  blockId: text('block_id').references(() => blocks.id, { onDelete: 'cascade' }),
   
   // File metadata
   fileName: varchar('file_name', { length: 255 }).notNull(),
@@ -293,7 +292,7 @@ export const attachments = pgTable('attachments', {
   providerId: varchar('provider_id', { length: 255 }),
   
   // Metadata
-  uploadedBy: uuid('uploaded_by').references(() => users.id).notNull(),
+  uploadedBy: text('uploaded_by').references(() => users.id).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => [
   index('attachments_note_id_idx').on(table.noteId),
@@ -303,12 +302,12 @@ export const attachments = pgTable('attachments', {
 
 // Saved searches - user's saved search queries
 export const savedSearches = pgTable('saved_searches', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: varchar('name', { length: 255 }).notNull(),
   query: varchar('query', { length: 500 }).notNull(),
   filters: jsonb('filters'), // search filters as JSON
-  workspaceId: uuid('workspace_id').references(() => workspaces.id).notNull(),
-  userId: uuid('user_id').references(() => users.id).notNull(),
+  workspaceId: text('workspace_id').references(() => workspaces.id).notNull(),
+  userId: text('user_id').references(() => users.id).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => [
   index('saved_searches_workspace_id_idx').on(table.workspaceId),
@@ -317,13 +316,13 @@ export const savedSearches = pgTable('saved_searches', {
 
 // Templates - reusable note/block structures
 export const templates = pgTable('templates', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
   icon: varchar('icon', { length: 100 }),
   category: varchar('category', { length: 100 }),
-  workspaceId: uuid('workspace_id').references(() => workspaces.id).notNull(),
-  createdBy: uuid('created_by').references(() => users.id).notNull(),
+  workspaceId: text('workspace_id').references(() => workspaces.id).notNull(),
+  createdBy: text('created_by').references(() => users.id).notNull(),
   isPublic: boolean('is_public').default(false),
   blocks: jsonb('blocks').notNull(), // template block structure
   properties: jsonb('properties'), // template properties
@@ -337,11 +336,11 @@ export const templates = pgTable('templates', {
 
 // Activity log - track changes for collaboration
 export const activityLog = pgTable('activity_log', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  workspaceId: uuid('workspace_id').references(() => workspaces.id).notNull(),
-  userId: uuid('user_id').references(() => users.id).notNull(),
-  noteId: uuid('note_id').references(() => notes.id, { onDelete: 'cascade' }),
-  blockId: uuid('block_id').references(() => blocks.id, { onDelete: 'cascade' }),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  workspaceId: text('workspace_id').references(() => workspaces.id).notNull(),
+  userId: text('user_id').references(() => users.id).notNull(),
+  noteId: text('note_id').references(() => notes.id, { onDelete: 'cascade' }),
+  blockId: text('block_id').references(() => blocks.id, { onDelete: 'cascade' }),
   
   action: varchar('action', { length: 50 }).notNull(), // 'created', 'updated', 'deleted', etc.
   entityType: varchar('entity_type', { length: 50 }).notNull(), // 'note', 'block', 'comment', etc.
@@ -358,8 +357,8 @@ export const activityLog = pgTable('activity_log', {
 
 // Database views - different views for database pages (like Notion database views)
 export const databaseViews = pgTable('database_views', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  databaseId: uuid('database_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  databaseId: text('database_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   type: varchar('type', { length: 50 }).notNull(), // 'table', 'board', 'calendar', 'gallery', 'list'
   
@@ -373,7 +372,7 @@ export const databaseViews = pgTable('database_views', {
   isDefault: boolean('is_default').default(false),
   position: integer('position').default(0),
   
-  createdBy: uuid('created_by').references(() => users.id).notNull(),
+  createdBy: text('created_by').references(() => users.id).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => [
@@ -384,9 +383,9 @@ export const databaseViews = pgTable('database_views', {
 
 // Page relations - links between pages (like Notion relations)
 export const pageRelations = pgTable('page_relations', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  fromPageId: uuid('from_page_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
-  toPageId: uuid('to_page_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  fromPageId: text('from_page_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
+  toPageId: text('to_page_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
   relationType: varchar('relation_type', { length: 50 }).notNull(), // 'reference', 'backlink', 'relation_property'
   propertyName: varchar('property_name', { length: 255 }), // for relation properties
   
@@ -400,9 +399,9 @@ export const pageRelations = pgTable('page_relations', {
 
 // Real-time collaboration - track active users and cursors
 export const collaborationSessions = pgTable('collaboration_sessions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  noteId: uuid('note_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  noteId: text('note_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
+  userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   
   // Session info
   sessionId: varchar('session_id', { length: 255 }).notNull(),
@@ -421,9 +420,9 @@ export const collaborationSessions = pgTable('collaboration_sessions', {
 
 // Page history - version control for pages
 export const pageHistory = pgTable('page_history', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  noteId: uuid('note_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
-  userId: uuid('user_id').references(() => users.id).notNull(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  noteId: text('note_id').references(() => notes.id, { onDelete: 'cascade' }).notNull(),
+  userId: text('user_id').references(() => users.id).notNull(),
   
   // Version info
   version: integer('version').notNull(),
