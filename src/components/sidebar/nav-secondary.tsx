@@ -1,6 +1,7 @@
 import React from "react"
 import { type LucideIcon } from "lucide-react"
 
+import { navSecondaryData } from "@/components/sidebar/data/nav-secondary-data"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -11,16 +12,16 @@ import {
 } from "@/components/ui/sidebar"
 
 export function NavSecondary({
-  items,
+  items = navSecondaryData,
   ...props
 }: {
-  items: {
+  items?: {
     title: string
     url: string
     icon: LucideIcon
     badge?: React.ReactNode
   }[]
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+} & React.ComponentPropsWithoutRef<typeof SidebarGroup> = {}) {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>

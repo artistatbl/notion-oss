@@ -8,6 +8,7 @@ import {
   Trash2,
 } from "lucide-react"
 
+import { favoritesData } from "@/components/sidebar/data/favorites-data"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,14 +27,14 @@ import {
 } from "@/components/ui/sidebar"
 
 export function NavFavorites({
-  favorites,
+  favorites = favoritesData,
 }: {
-  favorites: {
+  favorites?: {
     name: string
     url: string
     emoji: string
   }[]
-}) {
+} = {}) {
   const { isMobile } = useSidebar()
 
   return (

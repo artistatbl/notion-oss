@@ -1,5 +1,6 @@
 import { ChevronRight, MoreHorizontal, Plus } from "lucide-react"
 
+import { workspacesData } from "@/components/sidebar/data/workspaces-data"
 import {
   Collapsible,
   CollapsibleContent,
@@ -19,17 +20,18 @@ import {
 } from "@/components/ui/sidebar"
 
 export function NavWorkspaces({
-  workspaces,
+  workspaces = workspacesData,
 }: {
-  workspaces: {
+  workspaces?: {
     name: string
     emoji: React.ReactNode
     pages: {
       name: string
       emoji: React.ReactNode
+      url?: string
     }[]
   }[]
-}) {
+} = {}) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Workspaces</SidebarGroupLabel>

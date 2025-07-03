@@ -3,6 +3,7 @@
 import * as React from "react"
 import { ChevronDown, Plus } from "lucide-react"
 
+import { teamsData } from "@/components/sidebar/data/teams-data"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,14 +20,14 @@ import {
 } from "@/components/ui/sidebar"
 
 export function TeamSwitcher({
-  teams,
+  teams = teamsData,
 }: {
-  teams: {
+  teams?: {
     name: string
     logo: React.ElementType
     plan: string
   }[]
-}) {
+} = {}) {
   const [activeTeam, setActiveTeam] = React.useState(teams[0])
 
   if (!activeTeam) {

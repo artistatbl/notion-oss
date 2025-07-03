@@ -2,6 +2,7 @@
 
 import { type LucideIcon } from "lucide-react"
 
+import { navMainData } from "@/components/sidebar/data/nav-main-data"
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -9,15 +10,16 @@ import {
 } from "@/components/ui/sidebar"
 
 export function NavMain({
-  items,
+  items = navMainData,
 }: {
-  items: {
+  items?: {
     title: string
     url: string
     icon: LucideIcon
     isActive?: boolean
+    badge?: string
   }[]
-}) {
+} = {}) {
   return (
     <SidebarMenu>
       {items.map((item) => (
