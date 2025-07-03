@@ -17,19 +17,19 @@ This document outlines the step-by-step plan to implement a Notion-like interfac
   - [x] Add folder structure with nested items
   - [ ] Implement tags section with count indicators
 
-- [ ] Implement note list view
-  - [ ] Create note list item component with title, date, and preview
-  - [ ] Add color indicators for different note types
-  - [ ] Implement date formatting for note timestamps
-  - [ ] Add note filtering and sorting capabilities
+- [x] Implement note list view
+  - [x] Create note list item component with title, date, and preview
+  - [x] Add color indicators for different note types
+  - [x] Implement date formatting for note timestamps
+  - [x] Add note filtering and sorting capabilities
 
 ### Phase 2: Note Editor
 
-- [ ] Build rich text editor
-  - [ ] Implement title editing with styling
-  - [ ] Create block-based content editing
-  - [ ] Add support for different text formats (headings, paragraphs, lists)
-  - [ ] Implement code blocks with syntax highlighting
+- [x] Build rich text editor
+  - [x] Implement title editing with styling
+  - [x] Create block-based content editing
+  - [x] Add support for different text formats (headings, paragraphs, lists)
+  - [x] Implement code blocks with syntax highlighting
 
 - [ ] Add media support
   - [ ] Implement image embedding
@@ -93,19 +93,19 @@ This document outlines the step-by-step plan to implement a Notion-like interfac
 - [x] User profile section at bottom
 
 ### Note List Components
-- [ ] All notes dropdown filter
-- [ ] Note items with:
-  - [ ] Color indicators
-  - [ ] Title
-  - [ ] Date
-  - [ ] Preview text
-  - [ ] Tags/categories
+- [x] All notes dropdown filter
+- [x] Note items with:
+  - [x] Color indicators
+  - [x] Title
+  - [x] Date
+  - [x] Preview text
+  - [x] Tags/categories
 
 ### Note Editor Components
-- [ ] Header with title and actions
-- [ ] Rich text content area
-- [ ] File attachments section
-- [ ] Formatting toolbar at bottom
+- [x] Header with title and actions
+- [x] Rich text content area
+- [x] File attachments section
+- [x] Formatting toolbar at bottom
 - [ ] Right-click context menu with actions
 
 ## Technical Implementation Notes
