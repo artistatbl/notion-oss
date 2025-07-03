@@ -1,5 +1,8 @@
+"use client"
+
 import { NavActions } from "@/components/sidebar/nav-actions"
 import { NotesPage } from "@/components/notes/notes-page"
+import { NotesProvider, useNotes } from "@/components/notes/notes-context"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,7 +12,9 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
-export default function DashboardPage() {
+function DashboardContent() {
+  const { isNotesVisible } = useNotes()
+
   return (
     <>
       <header className="flex h-14 shrink-0 items-center gap-2">
@@ -34,8 +39,21 @@ export default function DashboardPage() {
         </div>
       </header>
       <div className="flex flex-1 h-[calc(100vh-3.5rem)]">
-        <NotesPage />
+        {isNotesVisible ? (
+          <NotesPage />
+        ) : (
+          <div className="flex flex-col items-center justify-center w-full">
+            <h2 className="text-2xl font-semibold mb-4">Welcome to JStack</h2>
+            <p className="text-muted-foreground">Click on the Note navigation item to view your notes.</p>
+          </div>
+        )}
       </div>
     </>
+  )
+}
+
+export default function DashboardPage() {
+  return (
+    <DashboardContent />
   )
 }

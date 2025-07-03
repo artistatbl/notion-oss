@@ -9,6 +9,7 @@ import { useUser } from "@/hooks/use-user";
 import { useUserExists } from "@/hooks/use-user-exists";
 import { useParams, useRouter, notFound } from "next/navigation";
 import { useEffect } from "react";
+import { NotesProvider } from "@/components/notes/notes-context";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -52,11 +53,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
+    <NotesProvider>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
+    </NotesProvider>
   )
 }
