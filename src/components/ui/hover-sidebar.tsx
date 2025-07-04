@@ -23,8 +23,10 @@ export function HoverSidebar({
   const { state } = useSidebar()
   const [, setIsHovered] = React.useState(false)
   const [showHoverSidebar, setShowHoverSidebar] = React.useState(false)
+  const [isExiting, setIsExiting] = React.useState(false)
   const [hasOpenDropdown, setHasOpenDropdown] = React.useState(false)
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+  const exitTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
   const sidebarRef = React.useRef<HTMLDivElement>(null)
 
   const handleMouseEnter = React.useCallback(() => {
@@ -32,6 +34,10 @@ export function HoverSidebar({
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
       }
+      if (exitTimeoutRef.current) {
+        clearTimeout(exitTimeoutRef.current)
+      }
+      setIsExiting(false)
       setIsHovered(true)
       setShowHoverSidebar(true)
     }
@@ -40,10 +46,13 @@ export function HoverSidebar({
   const handleMouseLeave = React.useCallback(() => {
     if (state === "collapsed" && !hasOpenDropdown) {
       setIsHovered(false)
+      // Start exit animation
+      setIsExiting(true)
       // Add a small delay before hiding to prevent flickering
-      timeoutRef.current = setTimeout(() => {
+      exitTimeoutRef.current = setTimeout(() => {
         setShowHoverSidebar(false)
-      }, 150)
+        setIsExiting(false)
+      }, 300) // Match the animation duration
     }
   }, [state, hasOpenDropdown])
 
@@ -86,6 +95,9 @@ export function HoverSidebar({
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
       }
+      if (exitTimeoutRef.current) {
+        clearTimeout(exitTimeoutRef.current)
+      }
     }
   }, [])
 
@@ -99,7 +111,7 @@ export function HoverSidebar({
       {/* Hover trigger area */}
       <div
         className={cn(
-          "fixed inset-y-0 z-[5] w-4 transition-all duration-200",
+          "fixed inset-y-0 z-[15] w-6 transition-all duration-300 ease-in-out",
           side === "left" ? "left-0" : "right-0"
         )}
         onMouseEnter={handleMouseEnter}
@@ -116,9 +128,18 @@ export function HoverSidebar({
             top: "calc((100vh - var(--sidebar-height-hover)) / 2)"
           } as React.CSSProperties}
           className={cn(
-            "fixed z-50 w-64 transition-all duration-200 ease-linear",
+            "fixed z-50 w-64 transition-all duration-300 ease-in-out transform",
             side === "left" ? "left-0" : "right-0",
             "shadow-xl",
+            !isExiting ? (
+              side === "left" 
+                ? "animate-in slide-in-from-left-4 fade-in-0 scale-100 opacity-100" 
+                : "animate-in slide-in-from-right-4 fade-in-0 scale-100 opacity-100"
+            ) : (
+              side === "left"
+                ? "animate-out slide-out-to-left-4 fade-out-0 scale-95 opacity-0"
+                : "animate-out slide-out-to-right-4 fade-out-0 scale-95 opacity-0"
+            ),
             className
           )}
           onMouseEnter={handleMouseEnter}
@@ -127,8 +148,9 @@ export function HoverSidebar({
         >
           <div
             className={cn(
-              "bg-sidebar/95 backdrop-blur-sm border border-sidebar-border rounded-lg shadow-xl flex h-full w-full flex-col transition-all duration-200",
-              variant === "floating" && "border-sidebar-border rounded-lg border shadow-sm"
+              "bg-sidebar/95 backdrop-blur-sm border border-sidebar-border rounded-lg shadow-xl flex h-full w-full flex-col transition-all duration-300 ease-in-out transform",
+              variant === "floating" && "border-sidebar-border rounded-lg border shadow-sm",
+              !isExiting ? "scale-100" : "scale-95"
             )}
           >
             {children}

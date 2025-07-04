@@ -27,18 +27,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <>
       <div
         className={cn(
-          "fixed top-4 left-4 z-50 flex items-center justify-center",
-          state === "expanded" ? "hidden" : "flex"
+          "fixed top-4 left-4 z-50 flex items-center justify-center transition-all duration-300 ease-in-out",
+          state === "expanded" 
+            ? "opacity-0 scale-95 pointer-events-none" 
+            : "opacity-100 scale-100 pointer-events-auto"
         )}
       >
-        <SidebarTrigger />
+        <SidebarTrigger className="transition-all duration-200 hover:scale-110" />
       </div>
 
       <Sidebar className="border-r-0" {...props}>
         <SidebarHeader>
           <div className="flex items-center justify-between px-2">
             <TeamSwitcher />
-            <SidebarTrigger className="size-6" />
+            <SidebarTrigger className="size-6 transition-all duration-200 hover:scale-110" />
           </div>
           <NavMain />
         </SidebarHeader>
@@ -57,7 +59,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarHeader>
           <div className="flex items-center justify-between px-2">
             <TeamSwitcher />
-            <SidebarTrigger className="size-6" />
+            <SidebarTrigger className="size-6 transition-all duration-200 hover:scale-110" />
           </div>
           <NavMain />
         </SidebarHeader>
