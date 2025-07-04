@@ -10,7 +10,6 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
 
 function DashboardContent() {
   const { isNotesVisible } = useNotes()
@@ -19,12 +18,11 @@ function DashboardContent() {
     <>
       <header className="flex h-14 shrink-0 items-center gap-2">
         <div className="flex flex-1 items-center gap-2 px-3">
-          <SidebarTrigger />
-          <Separator
+          {/* <Separator
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
-          />
-          <Breadcrumb>
+          /> */}
+          {/* <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbPage className="line-clamp-1">
@@ -32,7 +30,7 @@ function DashboardContent() {
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
-          </Breadcrumb>
+          </Breadcrumb> */}
         </div>
         <div className="ml-auto px-3">
           <NavActions />

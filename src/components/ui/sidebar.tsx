@@ -266,9 +266,9 @@ function SidebarTrigger({
     <Button
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
-      variant="ghost"
+      variant="link"
       size="icon"
-      className={cn("size-7 cursor-pointer", className)}
+      className={cn("size-7 cursor-pointer hover:bg-transparent", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
@@ -281,7 +281,11 @@ function SidebarTrigger({
   )
 
   if (isMobile) {
-    return button
+    return (
+      <div className="flex items-center justify-center">
+        {button}
+      </div>
+    )
   }
 
   return (

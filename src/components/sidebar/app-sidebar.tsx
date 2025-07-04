@@ -1,28 +1,45 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { NavFavorites } from "@/components/sidebar/nav-favorites"
-import { NavMain } from "@/components/sidebar/nav-main"
-import { NavSecondary } from "@/components/sidebar/nav-secondary"
-import { NavWorkspaces } from "@/components/sidebar/nav-workspaces"
-import { TeamSwitcher } from "@/components/sidebar/team-switcher"
-import { UserDropdown } from "@/components/sidebar/user-dropdown"
+import { NavFavorites } from "@/components/sidebar/nav-favorites";
+import { NavMain } from "@/components/sidebar/nav-main";
+import { NavSecondary } from "@/components/sidebar/nav-secondary";
+import { NavWorkspaces } from "@/components/sidebar/nav-workspaces";
+import { TeamSwitcher } from "@/components/sidebar/team-switcher";
+import { UserDropdown } from "@/components/sidebar/user-dropdown";
+import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  SidebarTrigger,
   HoverSidebar,
-} from "@/components/ui/sidebar"
+  useSidebar,
+} from "@/components/ui/sidebar";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { state } = useSidebar();
+
   return (
     <>
+      <div
+        className={cn(
+          "fixed top-4 left-4 z-50 flex items-center justify-center",
+          state === "expanded" ? "hidden" : "flex"
+        )}
+      >
+        <SidebarTrigger />
+      </div>
+
       <Sidebar className="border-r-0" {...props}>
         <SidebarHeader>
-          <TeamSwitcher />
+          <div className="flex items-center justify-between px-2">
+            <TeamSwitcher />
+            <SidebarTrigger className="size-6" />
+          </div>
           <NavMain />
         </SidebarHeader>
         <SidebarContent>
@@ -35,10 +52,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
-      
+
       <HoverSidebar>
         <SidebarHeader>
-          <TeamSwitcher />
+          <div className="flex items-center justify-between px-2">
+            <TeamSwitcher />
+            <SidebarTrigger className="size-6" />
+          </div>
           <NavMain />
         </SidebarHeader>
         <SidebarContent>
@@ -51,5 +71,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarFooter>
       </HoverSidebar>
     </>
-  )
+  );
 }
