@@ -21,12 +21,12 @@ export function NavMain({
     badge?: string
   }[]
 } = {}) {
-  const { showNotes, isNotesVisible } = useNotes()
+  const { toggleNotes, isNotesVisible } = useNotes()
 
   const handleItemClick = (e: React.MouseEvent, item: typeof items[0]) => {
     if (item.title === "Note") {
       e.preventDefault()
-      showNotes()
+      toggleNotes()
     }
   }
 
